@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Monthly Salary Budget Calculator</title>
+    <style>
+      body {
+          box-sizing: border-box;
+          font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+          margin: 0;
+          padding: 20px;
+          min-height: 100vh;
+      }
+
+      .container {
+          max-width: 600px;
+          margin: 0 auto;
+          background: white;
+          border-radius: 20px;
+          box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+          overflow: hidden;
+      }
+
+      .header {
+          background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+          color: white;
+          padding: 30px;
+          text-align: center;
+      }
+
+      .header h1 {
+          margin: 0;
+          font-size: 2rem;
+          font-weight: 600;
+      }
+
+      .header p {
+          margin: 10px 0 0 0;
+          opacity: 0.9;
+          font-size: 1.1rem;
+      }
+
+      .input-section {
+          padding: 30px;
+          text-align: center;
+      }
+
+      .salary-input {
+          width: 100%;
+          max-width: 300px;
+          padding: 15px 20px;
+          font-size: 1.2rem;
+          border: 2px solid #e1e5e9;
+          border-radius: 12px;
+          text-align: center;
+          transition: all 0.3s ease;
+          margin-bottom: 20px;
+      }
+
+      .salary-input:focus {
+          outline: none;
+          border-color: #4facfe;
+          box-shadow: 0 0 0 3px rgba(79, 172, 254, 0.1);
+      }
+
+      .currency-symbol {
+          font-size: 1.2rem;
+          color: #666;
+          margin-right: 10px;
+      }
+
+      .results {
+          padding: 0 30px 30px 30px;
+      }
+
+      .budget-item {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding: 20px;
+          margin-bottom: 15px;
+          border-radius: 12px;
+          transition: transform 0.2s ease;
+      }
+
+      .budget-item:hover {
+          transform: translateY(-2px);
+      }
+
+      .needs {
+          background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
+          color: #8b1538;
+      }
+
+      .savings {
+          background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+          color: #2d5a87;
+      }
+
+      .whims {
+          background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+          color: #8b4513;
+      }
+
+      .personal-brand {
+          background: linear-gradient(135deg, #c2e9fb 0%, #a1c4fd 100%);
+          color: #1e3a8a;
+      }
+
+      .fun-money {
+          background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+          color: #7c2d12;
+      }
+
+      .category-info {
+          flex: 1;
+      }
+
+      .category-name {
+          font-weight: 600;
+          font-size: 1.1rem;
+          margin-bottom: 5px;
+      }
+
+      .category-description {
+          font-size: 0.9rem;
+          opacity: 0.8;
+      }
+
+      .percentage {
+          font-size: 0.9rem;
+          font-weight: 500;
+          margin-right: 15px;
+      }
+
+      .amount {
+          font-size: 1.3rem;
+          font-weight: 700;
+      }
+
+      .hidden {
+          display: none;
+      }
+
+      .fade-in {
+          animation: fadeIn 0.5s ease-in;
+      }
+
+      @keyframes fadeIn {
+          from { opacity: 0; transform: translateY(20px); }
+          to { opacity: 1; transform: translateY(0); }
+      }
+
+      @media (max-width: 640px) {
+          .container {
+              margin: 10px;
+              border-radius: 15px;
+          }
+
+          .header {
+              padding: 20px;
+          }
+
+          .header h1 {
+              font-size: 1.5rem;
+          }
+
+          .input-section, .results {
+              padding: 20px;
+          }
+
+          .budget-item {
+              flex-direction: column;
+              text-align: center;
+              gap: 10px;
+          }
+
+          .category-info {
+              order: 1;
+          }
+
+          .percentage, .amount {
+              order: 2;
+          }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1>💰 Salary Budget Calculator</h1>
+        <p>Smart money management made simple</p>
+      </div>
+
+      <div class="input-section">
+        <input
+          type="number"
+          id="salaryInput"
+          class="salary-input"
+          placeholder="Enter your monthly salary"
+          min="0"
+          step="0.01"
+        />
+      </div>
+
+      <div id="results" class="results hidden">
+        <div class="budget-item needs">
+          <div class="category-info">
+            <div class="category-name">🏠 Needs</div>
+            <div class="category-description">Housing, transport, food</div>
+          </div>
+          <div class="percentage">50%</div>
+          <div class="amount" id="needsAmount">$0</div>
+        </div>
+
+        <div class="budget-item savings">
+          <div class="category-info">
+            <div class="category-name">💎 Investment & Savings</div>
+            <div class="category-description">Building your future wealth</div>
+          </div>
+          <div class="percentage">20%</div>
+          <div class="amount" id="savingsAmount">$0</div>
+        </div>
+
+        <div class="budget-item whims">
+          <div class="category-info">
+            <div class="category-name">🎯 Purposeful Whims</div>
+            <div class="category-description">Planned treats and hobbies</div>
+          </div>
+          <div class="percentage">15%</div>
+          <div class="amount" id="whimsAmount">$0</div>
+        </div>
+
+        <div class="budget-item personal-brand">
+          <div class="category-info">
+            <div class="category-name">📚 Personal Brand</div>
+            <div class="category-description">Courses, gadgets, skills</div>
+          </div>
+          <div class="percentage">10%</div>
+          <div class="amount" id="personalBrandAmount">$0</div>
+        </div>
+
+        <div class="budget-item fun-money">
+          <div class="category-info">
+            <div class="category-name">☕ Fun Money</div>
+            <div class="category-description">
+              Coffee shops, spontaneous buys
+            </div>
+          </div>
+          <div class="percentage">5%</div>
+          <div class="amount" id="funMoneyAmount">$0</div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const salaryInput = document.getElementById('salaryInput');
+      const results = document.getElementById('results');
+      const needsAmount = document.getElementById('needsAmount');
+      const savingsAmount = document.getElementById('savingsAmount');
+      const whimsAmount = document.getElementById('whimsAmount');
+      const personalBrandAmount = document.getElementById('personalBrandAmount');
+      const funMoneyAmount = document.getElementById('funMoneyAmount');
+
+      function formatCurrency(amount) {
+          return new Intl.NumberFormat('en-US', {
+              style: 'currency',
+              currency: 'USD',
+              minimumFractionDigits: 0,
+              maximumFractionDigits: 0
+          }).format(amount);
+      }
+
+      function calculateBudget() {
+          const salary = parseFloat(salaryInput.value) || 0;
+
+          if (salary > 0) {
+              const needs = salary * 0.50;
+              const savings = salary * 0.20;
+              const whims = salary * 0.15;
+              const personalBrand = salary * 0.10;
+              const funMoney = salary * 0.05;
+
+              needsAmount.textContent = formatCurrency(needs);
+              savingsAmount.textContent = formatCurrency(savings);
+              whimsAmount.textContent = formatCurrency(whims);
+              personalBrandAmount.textContent = formatCurrency(personalBrand);
+              funMoneyAmount.textContent = formatCurrency(funMoney);
+
+              if (results.classList.contains('hidden')) {
+                  results.classList.remove('hidden');
+                  results.classList.add('fade-in');
+              }
+          } else {
+              results.classList.add('hidden');
+              results.classList.remove('fade-in');
+          }
+      }
+
+      salaryInput.addEventListener('input', calculateBudget);
+      salaryInput.addEventListener('keyup', calculateBudget);
+
+      // Focus on input when page loads
+      window.addEventListener('load', () => {
+          salaryInput.focus();
+      });
+    </script>
+    <script>
+      (function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'98725d17b5256eeb',t:'MTc1OTIyMTA4Mi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();
+    </script>
+  </body>
+</html>
