@@ -1,558 +1,323 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Monthly Salary Budget Calculator</title>
-    <style>
-        body {
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            margin: 0;
-            padding: 20px;
-            min-height: 100vh;
-        }
-        
-        .container {
-            max-width: 600px;
-            margin: 0 auto;
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
-            overflow: hidden;
-        }
-        
-        .header {
-            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-            color: white;
-            padding: 30px;
-            text-align: center;
-        }
-        
-        .header h1 {
-            margin: 0;
-            font-size: 2rem;
-            font-weight: 600;
-        }
-        
-        .header p {
-            margin: 10px 0 0 0;
-            opacity: 0.9;
-            font-size: 1.1rem;
-        }
-        
-        .input-section {
-            padding: 30px;
-            text-align: center;
-        }
-        
-        .currency-selector {
-            margin-bottom: 20px;
-        }
-        
-        .currency-selector label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-            color: #374151;
-        }
-        
-        .currency-select {
-            padding: 10px 15px;
-            border: 2px solid #e1e5e9;
-            border-radius: 8px;
-            font-size: 1rem;
-            background: white;
-            cursor: pointer;
-            transition: border-color 0.3s ease;
-        }
-        
-        .currency-select:focus {
-            outline: none;
-            border-color: #4facfe;
-        }
-        
-        .tax-section {
-            margin-top: 25px;
-            padding: 20px;
-            background: #f8fafc;
-            border-radius: 12px;
-            border: 1px solid #e2e8f0;
-        }
-        
-        .tax-toggle {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 12px;
-            margin-bottom: 15px;
-        }
-        
-        .toggle-switch {
-            position: relative;
-            display: inline-block;
-            width: 50px;
-            height: 24px;
-        }
-        
-        .toggle-switch input {
-            opacity: 0;
-            width: 0;
-            height: 0;
-        }
-        
-        .slider {
-            position: absolute;
-            cursor: pointer;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: #cbd5e1;
-            transition: 0.3s;
-            border-radius: 24px;
-        }
-        
-        .slider:before {
-            position: absolute;
-            content: "";
-            height: 18px;
-            width: 18px;
-            left: 3px;
-            bottom: 3px;
-            background-color: white;
-            transition: 0.3s;
-            border-radius: 50%;
-        }
-        
-        input:checked + .slider {
-            background-color: #4facfe;
-        }
-        
-        input:checked + .slider:before {
-            transform: translateX(26px);
-        }
-        
-        .tax-label {
-            font-weight: 500;
-            color: #374151;
-        }
-        
-        .tax-options {
-            transition: all 0.3s ease;
-        }
-        
-        .tax-method {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            margin-bottom: 15px;
-        }
-        
-        .tax-method label {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            cursor: pointer;
-            font-weight: 500;
-            color: #374151;
-        }
-        
-        .tax-method input[type="radio"] {
-            accent-color: #4facfe;
-        }
-        
-        .tax-inputs {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-        }
-        
-        .tax-input {
-            width: 120px;
-            padding: 10px 12px;
-            border: 2px solid #e1e5e9;
-            border-radius: 8px;
-            text-align: center;
-            font-size: 0.95rem;
-            transition: border-color 0.3s ease;
-        }
-        
-        .tax-input:focus {
-            outline: none;
-            border-color: #4facfe;
-        }
-        
-        .salary-input {
-            width: 100%;
-            max-width: 300px;
-            padding: 15px 20px;
-            font-size: 1.2rem;
-            border: 2px solid #e1e5e9;
-            border-radius: 12px;
-            text-align: center;
-            transition: all 0.3s ease;
-            margin-bottom: 20px;
-        }
-        
-        .salary-input:focus {
-            outline: none;
-            border-color: #4facfe;
-            box-shadow: 0 0 0 3px rgba(79, 172, 254, 0.1);
-        }
-        
-        .currency-symbol {
-            font-size: 1.2rem;
-            color: #666;
-            margin-right: 10px;
-        }
-        
-        .results {
-            padding: 0 30px 30px 30px;
-        }
-        
-        .budget-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 20px;
-            margin-bottom: 15px;
-            border-radius: 12px;
-            transition: transform 0.2s ease;
-        }
-        
-        .budget-item:hover {
-            transform: translateY(-2px);
-        }
-        
-        .needs {
-            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
-            color: #8b1538;
-        }
-        
-        .savings {
-            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
-            color: #2d5a87;
-        }
-        
-        .whims {
-            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
-            color: #8b4513;
-        }
-        
-        .personal-brand {
-            background: linear-gradient(135deg, #c2e9fb 0%, #a1c4fd 100%);
-            color: #1e3a8a;
-        }
-        
-        .fun-money {
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-            color: #7c2d12;
-        }
-        
-        .category-info {
-            flex: 1;
-        }
-        
-        .category-name {
-            font-weight: 600;
-            font-size: 1.1rem;
-            margin-bottom: 5px;
-        }
-        
-        .category-description {
-            font-size: 0.9rem;
-            opacity: 0.8;
-        }
-        
-        .percentage {
-            font-size: 0.9rem;
-            font-weight: 500;
-            margin-right: 15px;
-        }
-        
-        .amount {
-            font-size: 1.3rem;
-            font-weight: 700;
-        }
-        
-        .hidden {
-            display: none;
-        }
-        
-        .fade-in {
-            animation: fadeIn 0.5s ease-in;
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        @media (max-width: 640px) {
-            .container {
-                margin: 10px;
-                border-radius: 15px;
-            }
-            
-            .header {
-                padding: 20px;
-            }
-            
-            .header h1 {
-                font-size: 1.5rem;
-            }
-            
-            .input-section, .results {
-                padding: 20px;
-            }
-            
-            .budget-item {
-                flex-direction: column;
-                text-align: center;
-                gap: 10px;
-            }
-            
-            .category-info {
-                order: 1;
-            }
-            
-            .percentage, .amount {
-                order: 2;
-            }
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Calculadora Familiar</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: system-ui, sans-serif;
+      background: #f5f5f0;
+      color: #1a1a18;
+      min-height: 100vh;
+      padding: 2rem 1rem;
+    }
+
+    .calc-wrap {
+      max-width: 660px;
+      margin: 0 auto;
+    }
+
+    h2 {
+      font-size: 20px;
+      font-weight: 500;
+      margin-bottom: 1.5rem;
+    }
+
+    .tag {
+      display: inline-block;
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 99px;
+      margin-left: 6px;
+      background: #e6f1fb;
+      color: #185fa5;
+    }
+
+    .section-title {
+      font-size: 12px;
+      font-weight: 500;
+      color: #888780;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 10px;
+    }
+
+    .card {
+      background: #fff;
+      border: 0.5px solid rgba(0,0,0,0.12);
+      border-radius: 12px;
+      padding: 1rem 1.25rem;
+      margin-bottom: 1rem;
+    }
+
+    .input-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .input-row label {
+      font-size: 14px;
+      color: #888780;
+      min-width: 160px;
+    }
+
+    .prefix {
+      font-size: 14px;
+      color: #b4b2a9;
+    }
+
+    input[type="number"] {
+      flex: 1;
+      padding: 8px 10px;
+      border: 0.5px solid rgba(0,0,0,0.18);
+      border-radius: 8px;
+      font-size: 15px;
+      font-family: inherit;
+      background: #fff;
+      color: #1a1a18;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+
+    input[type="number"]:focus {
+      border-color: rgba(0,0,0,0.4);
+    }
+
+    .results-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 1rem;
+    }
+
+    .metric {
+      background: #f5f5f0;
+      border-radius: 8px;
+      padding: 0.85rem 1rem;
+    }
+
+    .metric-label {
+      font-size: 12px;
+      color: #888780;
+      margin-bottom: 4px;
+    }
+
+    .metric-value {
+      font-size: 22px;
+      font-weight: 500;
+      color: #1a1a18;
+    }
+
+    .metric-sub {
+      font-size: 12px;
+      color: #b4b2a9;
+      margin-top: 4px;
+    }
+
+    .diff-card {
+      background: #f5f5f0;
+      border-radius: 8px;
+      padding: 0.85rem 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+
+    .diff-label {
+      font-size: 13px;
+      color: #888780;
+    }
+
+    .diff-value {
+      font-size: 18px;
+      font-weight: 500;
+      color: #1a1a18;
+    }
+
+    .pos { color: #1D9E75; }
+    .neg { color: #D85A30; }
+
+    hr {
+      border: none;
+      border-top: 0.5px solid rgba(0,0,0,0.1);
+      margin: 1.5rem 0;
+    }
+
+    @media (max-width: 480px) {
+      .results-grid { grid-template-columns: 1fr; }
+      .input-row label { min-width: 120px; font-size: 13px; }
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h1>💰 Salary Budget Calculator</h1>
-            <p>Smart money management made simple</p>
-        </div>
-        
-        <div class="input-section">
-            <div class="currency-selector">
-                <label for="currencySelect">Currency:</label>
-                <select id="currencySelect" class="currency-select">
-                    <option value="USD">USD ($)</option>
-                    <option value="EUR">EUR (€)</option>
-                    <option value="GBP">GBP (£)</option>
-                    <option value="CAD">CAD ($)</option>
-                    <option value="AUD">AUD ($)</option>
-                    <option value="JPY">JPY (¥)</option>
-                    <option value="MXN">MXN ($)</option>
-                    <option value="BRL">BRL (R$)</option>
-                </select>
-            </div>
-            
-            <input 
-                type="number" 
-                id="salaryInput" 
-                class="salary-input" 
-                placeholder="Enter your monthly salary"
-                min="0"
-                step="0.01"
-            >
-            
-            <div class="tax-section">
-                <div class="tax-toggle">
-                    <label class="toggle-switch">
-                        <input type="checkbox" id="includeTaxes">
-                        <span class="slider"></span>
-                    </label>
-                    <span class="tax-label">Include taxes in calculation</span>
-                </div>
-                
-                <div id="taxOptions" class="tax-options hidden">
-                    <div class="tax-method">
-                        <label>
-                            <input type="radio" name="taxMethod" value="percentage" checked>
-                            Tax percentage
-                        </label>
-                        <label>
-                            <input type="radio" name="taxMethod" value="amount">
-                            Fixed tax amount
-                        </label>
-                    </div>
-                    
-                    <div class="tax-inputs">
-                        <input 
-                            type="number" 
-                            id="taxPercentage" 
-                            class="tax-input" 
-                            placeholder="Tax %"
-                            min="0"
-                            max="100"
-                            step="0.1"
-                            value="25"
-                        >
-                        <input 
-                            type="number" 
-                            id="taxAmount" 
-                            class="tax-input hidden" 
-                            placeholder="Tax amount"
-                            min="0"
-                            step="0.01"
-                        >
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <div id="results" class="results hidden">
-            <div class="budget-item needs">
-                <div class="category-info">
-                    <div class="category-name">🏠 Needs</div>
-                    <div class="category-description">Housing, transport, food</div>
-                </div>
-                <div class="percentage">50%</div>
-                <div class="amount" id="needsAmount">$0</div>
-            </div>
-            
-            <div class="budget-item savings">
-                <div class="category-info">
-                    <div class="category-name">💎 Investment & Savings</div>
-                    <div class="category-description">Building your future wealth</div>
-                </div>
-                <div class="percentage">20%</div>
-                <div class="amount" id="savingsAmount">$0</div>
-            </div>
-            
-            <div class="budget-item whims">
-                <div class="category-info">
-                    <div class="category-name">🎯 Purposeful Whims</div>
-                    <div class="category-description">Planned treats and hobbies</div>
-                </div>
-                <div class="percentage">15%</div>
-                <div class="amount" id="whimsAmount">$0</div>
-            </div>
-            
-            <div class="budget-item personal-brand">
-                <div class="category-info">
-                    <div class="category-name">📚 Personal Brand</div>
-                    <div class="category-description">Courses, gadgets, skills</div>
-                </div>
-                <div class="percentage">10%</div>
-                <div class="amount" id="personalBrandAmount">$0</div>
-            </div>
-            
-            <div class="budget-item fun-money">
-                <div class="category-info">
-                    <div class="category-name">☕ Fun Money</div>
-                    <div class="category-description">Coffee shops, spontaneous buys</div>
-                </div>
-                <div class="percentage">5%</div>
-                <div class="amount" id="funMoneyAmount">$0</div>
-            </div>
-        </div>
+  <div class="calc-wrap">
+    <h2>Calculadora familiar <span class="tag">Bs / USD</span></h2>
+
+    <!-- TASAS DEL DÍA -->
+    <p class="section-title">Tasas del día</p>
+    <div class="card">
+      <div class="input-row">
+        <label>Tasa Binance (Bs/USDT)</label>
+        <input type="number" id="binance" placeholder="ej. 60.50" step="0.01" />
+      </div>
+      <div class="input-row">
+        <label>Tasa BCV (Bs/USD)</label>
+        <input type="number" id="bcv" placeholder="ej. 55.80" step="0.01" />
+      </div>
     </div>
 
-    <script>
-        const salaryInput = document.getElementById('salaryInput');
-        const currencySelect = document.getElementById('currencySelect');
-        const includeTaxes = document.getElementById('includeTaxes');
-        const taxOptions = document.getElementById('taxOptions');
-        const taxPercentage = document.getElementById('taxPercentage');
-        const taxAmount = document.getElementById('taxAmount');
-        const results = document.getElementById('results');
-        const needsAmount = document.getElementById('needsAmount');
-        const savingsAmount = document.getElementById('savingsAmount');
-        const whimsAmount = document.getElementById('whimsAmount');
-        const personalBrandAmount = document.getElementById('personalBrandAmount');
-        const funMoneyAmount = document.getElementById('funMoneyAmount');
+    <!-- SECCIÓN 1 -->
+    <p class="section-title">Sección 1 — Precio en Bs → resultado en USD</p>
+    <div class="card">
+      <div class="input-row">
+        <span class="prefix">Bs</span>
+        <input type="number" id="precio1" placeholder="Ingresa el precio base" step="0.01" />
+      </div>
 
-        function formatCurrency(amount) {
-            const currency = currencySelect.value;
-            return new Intl.NumberFormat('en-US', {
-                style: 'currency',
-                currency: currency,
-                minimumFractionDigits: 0,
-                maximumFractionDigits: 0
-            }).format(amount);
-        }
+      <div class="results-grid">
+        <div class="metric">
+          <p class="metric-label">Vía Binance (base ÷ Binance)</p>
+          <p class="metric-value" id="r1_binance_base">—</p>
+          <p class="metric-sub">USD sin ajuste</p>
+        </div>
+        <div class="metric">
+          <p class="metric-label">Vía BCV (base ÷ BCV)</p>
+          <p class="metric-value" id="r1_bcv_base">—</p>
+          <p class="metric-sub">USD sin ajuste</p>
+        </div>
+      </div>
 
-        function calculateBudget() {
-            const grossSalary = parseFloat(salaryInput.value) || 0;
-            
-            if (grossSalary > 0) {
-                let netSalary = grossSalary;
-                
-                // Calculate taxes if enabled
-                if (includeTaxes.checked) {
-                    const taxMethod = document.querySelector('input[name="taxMethod"]:checked').value;
-                    let taxDeduction = 0;
-                    
-                    if (taxMethod === 'percentage') {
-                        const taxPercent = parseFloat(taxPercentage.value) || 0;
-                        taxDeduction = grossSalary * (taxPercent / 100);
-                    } else {
-                        taxDeduction = parseFloat(taxAmount.value) || 0;
-                    }
-                    
-                    netSalary = grossSalary - taxDeduction;
-                }
-                
-                // Calculate budget categories based on net salary
-                const needs = netSalary * 0.50;
-                const savings = netSalary * 0.20;
-                const whims = netSalary * 0.15;
-                const personalBrand = netSalary * 0.10;
-                const funMoney = netSalary * 0.05;
-                
-                needsAmount.textContent = formatCurrency(needs);
-                savingsAmount.textContent = formatCurrency(savings);
-                whimsAmount.textContent = formatCurrency(whims);
-                personalBrandAmount.textContent = formatCurrency(personalBrand);
-                funMoneyAmount.textContent = formatCurrency(funMoney);
-                
-                if (results.classList.contains('hidden')) {
-                    results.classList.remove('hidden');
-                    results.classList.add('fade-in');
-                }
-            } else {
-                results.classList.add('hidden');
-                results.classList.remove('fade-in');
-            }
-        }
+      <div class="diff-card">
+        <span class="diff-label">Diferencia (sin ajuste)</span>
+        <span class="diff-value" id="r1_diff1">—</span>
+      </div>
 
-        function toggleTaxOptions() {
-            if (includeTaxes.checked) {
-                taxOptions.classList.remove('hidden');
-            } else {
-                taxOptions.classList.add('hidden');
-            }
-            calculateBudget();
-        }
+      <div class="results-grid">
+        <div class="metric">
+          <p class="metric-label">Binance (+27%)</p>
+          <p class="metric-value" id="r1_binance_adj">—</p>
+          <p class="metric-sub">USD con comisión 27%</p>
+        </div>
+        <div class="metric">
+          <p class="metric-label">BCV (+97%)</p>
+          <p class="metric-value" id="r1_bcv_adj">—</p>
+          <p class="metric-sub">USD con ajuste 97%</p>
+        </div>
+      </div>
 
-        function toggleTaxMethod() {
-            const taxMethod = document.querySelector('input[name="taxMethod"]:checked').value;
-            if (taxMethod === 'percentage') {
-                taxPercentage.classList.remove('hidden');
-                taxAmount.classList.add('hidden');
-            } else {
-                taxPercentage.classList.add('hidden');
-                taxAmount.classList.remove('hidden');
-            }
-            calculateBudget();
-        }
+      <div class="diff-card">
+        <span class="diff-label">Diferencia (con ajuste)</span>
+        <span class="diff-value" id="r1_diff2">—</span>
+      </div>
+    </div>
 
-        // Event listeners
-        salaryInput.addEventListener('input', calculateBudget);
-        salaryInput.addEventListener('keyup', calculateBudget);
-        currencySelect.addEventListener('change', calculateBudget);
-        includeTaxes.addEventListener('change', toggleTaxOptions);
-        taxPercentage.addEventListener('input', calculateBudget);
-        taxAmount.addEventListener('input', calculateBudget);
-        
-        document.querySelectorAll('input[name="taxMethod"]').forEach(radio => {
-            radio.addEventListener('change', toggleTaxMethod);
-        });
-        
-        // Focus on input when page loads
-        window.addEventListener('load', () => {
-            salaryInput.focus();
-        });
-    </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'98744fd1f0e66eeb',t:'MTc1OTI0MTUxMC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+    <hr />
+
+    <!-- SECCIÓN 2 — INVERSA -->
+    <p class="section-title">Sección 2 — Precio en USD → porcentaje de diferencia</p>
+    <div class="card">
+      <div class="input-row">
+        <span class="prefix">$</span>
+        <input type="number" id="precio2" placeholder="Ingresa el precio en USD" step="0.01" />
+      </div>
+
+      <div class="results-grid">
+        <div class="metric">
+          <p class="metric-label">Precio en Bs vía Binance</p>
+          <p class="metric-value" id="r2_binance">—</p>
+          <p class="metric-sub">Bs</p>
+        </div>
+        <div class="metric">
+          <p class="metric-label">Precio en Bs vía BCV</p>
+          <p class="metric-value" id="r2_bcv">—</p>
+          <p class="metric-sub">Bs</p>
+        </div>
+      </div>
+
+      <div class="diff-card">
+        <span class="diff-label">Diferencia en Bs</span>
+        <span class="diff-value" id="r2_diff_bs">—</span>
+      </div>
+
+      <div class="metric">
+        <p class="metric-label">Diferencia porcentual entre tasas</p>
+        <p class="metric-value" id="r2_pct" style="font-size:28px;">—</p>
+        <p class="metric-sub" id="r2_pct_sub"></p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const $ = id => document.getElementById(id);
+    const fmt = (n, dec = 2) => isNaN(n) || !isFinite(n) ? '—' : n.toFixed(dec);
+    const fmtSign = (n, dec = 2) => {
+      if (isNaN(n) || !isFinite(n)) return '—';
+      return (n >= 0 ? '+' : '') + n.toFixed(dec);
+    };
+
+    function calc() {
+      const binance = parseFloat($('binance').value);
+      const bcv = parseFloat($('bcv').value);
+      const p1 = parseFloat($('precio1').value);
+      const p2 = parseFloat($('precio2').value);
+
+      // SECCIÓN 1
+      if (!isNaN(p1) && !isNaN(binance) && binance > 0 && !isNaN(bcv) && bcv > 0) {
+        const b_base = p1 / binance;
+        const bcv_base = p1 / bcv;
+        const diff1 = b_base - bcv_base;
+        const b_adj = (p1 * 1.27) / binance;
+        const bcv_adj = (p1 * 1.97) / bcv;
+        const diff2 = b_adj - bcv_adj;
+
+        $('r1_binance_base').textContent = fmt(b_base) + ' $';
+        $('r1_bcv_base').textContent = fmt(bcv_base) + ' $';
+        const d1 = $('r1_diff1');
+        d1.textContent = fmtSign(diff1) + ' $';
+        d1.className = 'diff-value ' + (diff1 >= 0 ? 'pos' : 'neg');
+
+        $('r1_binance_adj').textContent = fmt(b_adj) + ' $';
+        $('r1_bcv_adj').textContent = fmt(bcv_adj) + ' $';
+        const d2 = $('r1_diff2');
+        d2.textContent = fmtSign(diff2) + ' $';
+        d2.className = 'diff-value ' + (diff2 >= 0 ? 'pos' : 'neg');
+      } else {
+        ['r1_binance_base','r1_bcv_base','r1_binance_adj','r1_bcv_adj'].forEach(id => $( id).textContent = '—');
+        ['r1_diff1','r1_diff2'].forEach(id => { $(id).textContent = '—'; $(id).className = 'diff-value'; });
+      }
+
+      // SECCIÓN 2
+      if (!isNaN(p2) && !isNaN(binance) && binance > 0 && !isNaN(bcv) && bcv > 0) {
+        const bs_bin = p2 * binance;
+        const bs_bcv = p2 * bcv;
+        const diffBs = bs_bin - bs_bcv;
+        const pct = ((binance - bcv) / bcv) * 100;
+
+        $('r2_binance').textContent = fmt(bs_bin) + ' Bs';
+        $('r2_bcv').textContent = fmt(bs_bcv) + ' Bs';
+        const dBs = $('r2_diff_bs');
+        dBs.textContent = fmtSign(diffBs) + ' Bs';
+        dBs.className = 'diff-value ' + (diffBs >= 0 ? 'pos' : 'neg');
+
+        const pctEl = $('r2_pct');
+        pctEl.textContent = fmtSign(pct, 2) + '%';
+        pctEl.className = 'metric-value ' + (pct >= 0 ? 'pos' : 'neg');
+        $('r2_pct_sub').textContent = pct >= 0 ? 'Binance está por encima del BCV' : 'BCV está por encima de Binance';
+      } else {
+        ['r2_binance','r2_bcv','r2_pct'].forEach(id => $( id).textContent = '—');
+        $('r2_diff_bs').textContent = '—';
+        $('r2_diff_bs').className = 'diff-value';
+        $('r2_pct_sub').textContent = '';
+      }
+    }
+
+    ['binance','bcv','precio1','precio2'].forEach(id => $(id).addEventListener('input', calc));
+  </script>
+</body>
 </html>
